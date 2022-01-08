@@ -4,14 +4,14 @@
   "main": "customer-success-balancing.js",
   "private": true,
   "scripts": {
-    "test": "jest"
+    "test": "tsc && jest"
   },
   "dependencies": {
     "jest": "^26.6.3"
   },
   "jest": {
     "testMatch": [
-      "**/*.js"
+      "**.spec.js"
     ]
   },
   "devDependencies": {
@@ -22,6 +22,7 @@
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.25.4",
     "ts-node": "^10.4.0",
+    "tsc": "^2.0.3",
     "typescript": "^4.5.4"
   }
 }

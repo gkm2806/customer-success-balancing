@@ -11,7 +11,7 @@ export const customerSuccessBalancing = (
   customerSuccess: customerSuccess[],
   customers: customers[],
   customerSuccessAway: number[]
-) => {
+):number => {
   const removeAwayCustomerSuccess = ():customerSuccess[] => (
     customerSuccess.filter((cs) => customerSuccessAway.includes(cs.id))
   );
@@ -42,5 +42,6 @@ export const customerSuccessBalancing = (
   ensureClientsRange();
   ensureMaxAwayLimit();
 
+  return 0;
   //* END OF PREMISES *//
 };

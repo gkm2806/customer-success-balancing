@@ -21,7 +21,7 @@ test('Scenario 1', () => {
 });
 
 function buildSizeEntities(size: number, score: number) {
-  const result = [];
+  const result:any[] = [];
   for (let i = 0; i < size; i += 1) {
     result.push({ id: i + 1, score });
   }
