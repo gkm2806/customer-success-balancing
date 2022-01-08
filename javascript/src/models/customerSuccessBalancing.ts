@@ -1,5 +1,9 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 
+const sortObjBy = (array:any[], param:string, asc = true) => {
+  return asc ? array.sort((a,b) => a[param] - b[param]) : array.sort((a,b) => b[param] - a[param]);
+};
+
 export class CustomerSuccessBalancing {
   private activeCustomers: customer[];
   private activeCustomersSuccess:customerSuccess[];
@@ -12,27 +16,31 @@ export class CustomerSuccessBalancing {
   ) {}
 
   public execute (){
-    this.activeCustomersSuccess = this.removeAwayCustomerSuccess();
     this.activeCustomers = this.customers;
-
+    this.removeAwayCustomerSuccess();
+    this.sortCustomerSucccessByScore();
+    this.addCustomerCountToCostuemrSuccess();
     this.matchCustomersToCustomerSuccess();
     this.orderActiveCustomersSuccess();
-    this.ensureNoDups();
 
-    if (this.orderedActiveCustomersSuccess[0].customerCount == 0) return 0;
-    return this.orderedActiveCustomersSuccess[0].id;
+    return this.calculateReturn();
   }
 
-  removeAwayCustomerSuccess = ():customerSuccess[] => (
-    this.customerSuccess
-      .filter((cs) => !this.customerSuccessAway.includes(cs.id))
-      .sort((a,b) => a.score - b.score)
-      .map((cs) => ({ ...cs, customerCount: 0}))
-  );
+  removeAwayCustomerSuccess = ():customerSuccess[] => {
+    return this.activeCustomersSuccess = this.customerSuccess.filter((cs) => !this.customerSuccessAway.includes(cs.id));
+  };
+
+  sortCustomerSucccessByScore = ():customerSuccess[] => {
+    return this.activeCustomersSuccess = sortObjBy(this.activeCustomersSuccess, 'score');
+  };
+
+  addCustomerCountToCostuemrSuccess = ():customerSuccess[] => {
+    return this.activeCustomersSuccess = this.activeCustomersSuccess.map((cs) => ({ ...cs, customerCount: 0}));
+  };
   
   matchCustomersToCustomerSuccess = () => {
     for(const customer of this.activeCustomers) {
-      // treatNoBiggerCs();
+      // if (this.treatNoBiggerCs(customer)) continue;
       this.matchCustomerSuccess(customer);
     }
   };
@@ -45,21 +53,30 @@ export class CustomerSuccessBalancing {
     }
   };
 
-  treatNoBiggerCs = () => {
-    // const lastAcs = activeCustomersSuccess[activeCustomersSuccess.length-1];
-    // if(customer.score > lastAcs.score) {
-    //   lastAcs.customerCount! += 1;
-    //   continue;
-    // }
-  };
-    
   orderActiveCustomersSuccess = () => {
-    this.orderedActiveCustomersSuccess = this.activeCustomersSuccess.sort((a,b) => b.customerCount! - a.customerCount!);
+    this.orderedActiveCustomersSuccess = sortObjBy(this.activeCustomersSuccess, 'customerCount', false);
   };
 
   ensureNoDups = () => {
-    // if(activeCustomersSuccess[0].customerCount === activeCustomersSuccess[1].customerCount) return 0;
-    const acssSet = new Set(this.orderedActiveCustomersSuccess);
-    if(acssSet.size !== this.orderedActiveCustomersSuccess.length) return 0;
+    if(this.orderedActiveCustomersSuccess[0].customerCount === this.orderedActiveCustomersSuccess[1].customerCount) return true;
+    // const acssSet = new Set(this.orderedActiveCustomersSuccess.map((oacs) => oacs.customerCount));
+    // console.log(acssSet.size, this.orderedActiveCustomersSuccess.length);
+    // if(acssSet.size !== this.orderedActiveCustomersSuccess.length) return true;
+  };
+
+  calculateReturn = () => {
+    console.log(this.orderedActiveCustomersSuccess);
+    if (this.ensureNoDups()) return 0;
+    if (this.orderedActiveCustomersSuccess[0].customerCount == 0) return 0;
+    return this.orderedActiveCustomersSuccess[0].id;
+  };
+
+  //Not used
+  treatNoBiggerCs = (customer) => {
+    const lastAcs = this.activeCustomersSuccess[this.activeCustomersSuccess.length-1];
+    if(customer.score > lastAcs.score) {
+      lastAcs.customerCount! += 1;
+      return true;
+    }
   };
 }
