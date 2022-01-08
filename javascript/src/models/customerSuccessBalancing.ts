@@ -30,6 +30,17 @@ export class CustomerSuccessBalancing {
     return this.activeCustomersSuccess = this.customerSuccess.filter((cs) => !this.customerSuccessAway.includes(cs.id));
   };
 
+  // MARK: remove away and add new property
+  awesomeMethod = ():any => {
+    const batata = this.customerSuccess.reduce((acc, currentCS) => {
+      if(!this.customerSuccessAway.includes(currentCS.id)){
+        acc.push({...currentCS, customerCount: 0 });
+      }
+      return acc;
+    }, [] as customerSuccess[]);
+    this.activeCustomersSuccess = batata;
+  };
+
   sortCustomerSucccessByScore = ():customerSuccess[] => {
     return this.activeCustomersSuccess = sortObjBy(this.activeCustomersSuccess, 'score');
   };
