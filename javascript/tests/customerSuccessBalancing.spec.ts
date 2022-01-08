@@ -22,20 +22,21 @@ test('Scenario 1', () => {
   expect(new CustomerSuccessBalancing(css, customers, csAway).execute()).toEqual(1);
 });
 
-function buildSizeEntities(size: number, score: number) {
-  const result:any[] = [];
+function buildSizeEntities(size, score) {
+  const result = [];
   for (let i = 0; i < size; i += 1) {
+    //@ts-ignore
     result.push({ id: i + 1, score });
   }
   return result;
 }
 
-const mapEntities = (array:number[]) => 
-  array.map((score, index) => ({
+function mapEntities(arr) {
+  return arr.map((item, index) => ({
     id: index + 1,
-    score,
+    score: item,
   }));
-
+}
 
 function arraySeq(count, startAt){
   return Array.apply(0, Array(count)).map((it, index) => index + startAt);
