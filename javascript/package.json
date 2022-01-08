@@ -13,5 +13,10 @@
     "testMatch": [
       "**/*.js"
     ]
+  },
+  "devDependencies": {
+    "@types/jest": "^27.4.0",
+    "ts-node": "^10.4.0",
+    "typescript": "^4.5.4"
   }
 }

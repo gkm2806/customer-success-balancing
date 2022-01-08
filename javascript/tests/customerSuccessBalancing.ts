@@ -1,20 +1,3 @@
-/**
- * Returns the id of the CustomerSuccess with the most customers
- * @param {array} customerSuccess
- * @param {array} customers
- * @param {array} customerSuccessAway
- */
-function customerSuccessBalancing(
-  customerSuccess,
-  customers,
-  customerSuccessAway
-) {
-  /**
-   * ===============================================
-   * =========== Write your solution here ==========
-   * ===============================================
-   */
-}
 
 test("Scenario 1", () => {
   const css = [
@@ -39,6 +22,7 @@ test("Scenario 1", () => {
 function buildSizeEntities(size, score) {
   const result = [];
   for (let i = 0; i < size; i += 1) {
+    //@ts-ignore
     result.push({ id: i + 1, score });
   }
   return result;
