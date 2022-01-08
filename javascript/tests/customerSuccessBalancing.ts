@@ -20,7 +20,7 @@ test('Scenario 1', () => {
   expect(customerSuccessBalancing(css, customers, csAway)).toEqual(1);
 });
 
-function buildSizeEntities(size, score) {
+function buildSizeEntities(size: number, score: number) {
   const result = [];
   for (let i = 0; i < size; i += 1) {
     result.push({ id: i + 1, score });
