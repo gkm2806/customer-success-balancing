@@ -17,9 +17,8 @@ export class CustomerSuccessBalancing {
 
     this.matchCustomersToCustomerSuccess();
     this.orderActiveCustomersSuccess();
-    // if(activeCustomersSuccess[0].customerCount === activeCustomersSuccess[1].customerCount) return 0;
-    const acssSet = new Set(this.orderedActiveCustomersSuccess);
-    if(acssSet.size !== this.orderedActiveCustomersSuccess.length) return 0;
+    this.ensureNoDups();
+
     if (this.orderedActiveCustomersSuccess[0].customerCount == 0) return 0;
     return this.orderedActiveCustomersSuccess[0].id;
   }
@@ -56,5 +55,11 @@ export class CustomerSuccessBalancing {
     
   orderActiveCustomersSuccess = () => {
     this.orderedActiveCustomersSuccess = this.activeCustomersSuccess.sort((a,b) => b.customerCount! - a.customerCount!);
+  };
+
+  ensureNoDups = () => {
+    // if(activeCustomersSuccess[0].customerCount === activeCustomersSuccess[1].customerCount) return 0;
+    const acssSet = new Set(this.orderedActiveCustomersSuccess);
+    if(acssSet.size !== this.orderedActiveCustomersSuccess.length) return 0;
   };
 }
