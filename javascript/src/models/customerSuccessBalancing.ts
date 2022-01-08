@@ -19,7 +19,7 @@ export class CustomerSuccessBalancing {
     this.activeCustomers = this.customers;
     this.removeAwayCustomerSuccess();
     this.sortCustomerSucccessByScore();
-    this.addCustomerCountToCostuemrSuccess();
+    this.addCustomerCountToCustomerSuccess();
     this.matchCustomersToCustomerSuccess();
     this.orderActiveCustomersSuccess();
 
@@ -34,7 +34,7 @@ export class CustomerSuccessBalancing {
     return this.activeCustomersSuccess = sortObjBy(this.activeCustomersSuccess, 'score');
   };
 
-  addCustomerCountToCostuemrSuccess = ():customerSuccess[] => {
+  addCustomerCountToCustomerSuccess = ():customerSuccess[] => {
     return this.activeCustomersSuccess = this.activeCustomersSuccess.map((cs) => ({ ...cs, customerCount: 0}));
   };
   
