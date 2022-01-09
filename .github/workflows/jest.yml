@@ -1,4 +1,4 @@
-name: CI JST
+name: CI JEST
 on:
   pull_request:
     types: [opened, synchronize]
