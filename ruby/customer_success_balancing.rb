@@ -1,16 +1,78 @@
 require 'minitest/autorun'
 require 'timeout'
 class CustomerSuccessBalancing
-  def initialize(customer_success, customers, customer_success_away)
-    @customer_success = customer_success
+  def initialize(customer_success, customers, away_customer_success)
+    @customerSuccess = customer_success
     @customers = customers
-    @customer_success_away = customer_success_away
+    @awayCustomerSuccess = away_customer_success
   end
 
-  # Returns the id of the CustomerSuccess with the most customers
   def execute
-    # Write your solution here
-    nil
+    @activeCustomers = @customers
+    removeAwayCustomerSuccess
+    sortCustomerSucccessByScore
+    matchCustomersToCustomerSuccess
+    orderActiveCustomersSuccess
+    calculateReturn
+  end
+
+  private
+
+  def removeAwayCustomerSuccess
+    newArray = []
+
+    @customerSuccess.each do |cs|
+      if(!@awayCustomerSuccess.include?(cs[:id]))
+        newArray.push({**cs, customerCount: 0})
+      end
+    end
+  
+    @activeCustomersSuccess = newArray
+  end
+
+  def sortCustomerSucccessByScore
+    @activeCustomersSuccess.sort { |a, b| a[:score] <=> b[:score] } 
+  end
+
+  def addCustomerCountToCustomerSuccess
+    @activeCustomersSuccess = @activeCustomersSuccess.map((cs) => ({ **cs, customerCount: 0}))
+  end
+  
+  def matchCustomersToCustomerSuccess
+    @activeCustomers.each do | customer |
+      matchCustomerSuccess(customer)
+    end
+  end
+
+  def matchCustomerSuccess(customer)
+    @activeCustomersSuccess.each do | acs |
+      next if (acs[:score] < customer[:score])
+      acs[:customerCount] += 1
+      break
+    end
+  end
+
+  def orderActiveCustomersSuccess
+    @orderedActiveCustomersSuccess = @activeCustomersSuccess.sort { |a, b| b[:customerCount] <=> a[:customerCount] } 
+  end
+
+  def ensureNoDups
+    return true if(!@orderedActiveCustomersSuccess[1].nil? && @orderedActiveCustomersSuccess[0][:customerCount] === @orderedActiveCustomersSuccess[1][:customerCount])
+    false
+  end
+
+  def calculateReturn
+    return 0 if (ensureNoDups())
+    return 0 if (@orderedActiveCustomersSuccess[0][:customerCount] == 0)
+    return @orderedActiveCustomersSuccess[0][:id]
+  end
+
+  def treatNoBiggerCs
+    lastAcs = @activeCustomersSuccess[@activeCustomersSuccess.length-1]
+    if(customer.score > lastAcs.score)
+      lastAcs.customerCount += 1
+      return true
+    end
   end
 end
 
