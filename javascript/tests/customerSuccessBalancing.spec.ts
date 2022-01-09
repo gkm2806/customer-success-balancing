@@ -45,6 +45,8 @@ function arraySeq(count, startAt){
 test('Scenario 2', () => {
   const css = mapEntities([11, 21, 31, 3, 4, 5]);
   const customers = mapEntities([10, 10, 10, 20, 20, 30, 30, 30, 20, 60]);
+  //                             11  11  11  21  21  31  31  31  21  31
+  // O css 31 tem 4 customers e ganha sozinho, embora o 11 e o 21 empatem em segundo, não vejo pq o teste esperar um empate
   const csAway = [];
 
   expect(new CustomerSuccessBalancing(css, customers, csAway).execute()).toEqual(0);
@@ -58,7 +60,8 @@ test('Scenario 3', () => {
   const customers = buildSizeEntities(10000, 998);
   const csAway = [999];
 
-  expect(new CustomerSuccessBalancing(css, customers, csAway).execute()).toEqual(999);
+  // MARK: the 999 is deleted in the upper line, getting right value from the ruby version
+  expect(new CustomerSuccessBalancing(css, customers, csAway).execute()).toEqual(998);
 
   if (new Date().getTime() - testStartTime > testTimeoutInMs) {
     throw new Error(`Test took longer than ${testTimeoutInMs}ms!`);
