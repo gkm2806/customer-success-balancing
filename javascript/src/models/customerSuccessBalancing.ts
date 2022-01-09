@@ -30,15 +30,15 @@ export class CustomerSuccessBalancing {
     return this.activeCustomersSuccess = this.customerSuccess.filter((cs) => !this.customerSuccessAway.includes(cs.id));
   };
 
-  // MARK: remove away and add new property
-  awesomeMethod = ():any => {
-    const batata = this.customerSuccess.reduce((acc, currentCS) => {
+  // MARK: remove customerSuccessAway and add new property
+  awesomeMethod = ():void => {
+    const data = this.customerSuccess.reduce((acc, currentCS) => {
       if(!this.customerSuccessAway.includes(currentCS.id)){
         acc.push({...currentCS, customerCount: 0 });
       }
       return acc;
     }, [] as customerSuccess[]);
-    this.activeCustomersSuccess = batata;
+    this.activeCustomersSuccess = data;
   };
 
   sortCustomerSucccessByScore = ():customerSuccess[] => {
@@ -49,14 +49,14 @@ export class CustomerSuccessBalancing {
     return this.activeCustomersSuccess = this.activeCustomersSuccess.map((cs) => ({ ...cs, customerCount: 0}));
   };
   
-  matchCustomersToCustomerSuccess = () => {
+  matchCustomersToCustomerSuccess = ():void => {
     for(const customer of this.activeCustomers) {
       // if (this.treatNoBiggerCs(customer)) continue;
       this.matchCustomerSuccess(customer);
     }
   };
 
-  matchCustomerSuccess = (customer) => {
+  matchCustomerSuccess = (customer):void => {
     for(const acs of this.activeCustomersSuccess) {
       if (acs.score < customer.score) continue;
       acs.customerCount! += 1;
@@ -64,19 +64,16 @@ export class CustomerSuccessBalancing {
     }
   };
 
-  orderActiveCustomersSuccess = () => {
+  orderActiveCustomersSuccess = ():void => {
     this.orderedActiveCustomersSuccess = sortObjBy(this.activeCustomersSuccess, 'customerCount', false);
   };
 
-  ensureNoDups = () => {
+  ensureNoDups = ():boolean => {
     if(this.orderedActiveCustomersSuccess[0].customerCount === this.orderedActiveCustomersSuccess[1].customerCount) return true;
-    // const acssSet = new Set(this.orderedActiveCustomersSuccess.map((oacs) => oacs.customerCount));
-    // console.log(acssSet.size, this.orderedActiveCustomersSuccess.length);
-    // if(acssSet.size !== this.orderedActiveCustomersSuccess.length) return true;
+    return false;
   };
 
-  calculateReturn = () => {
-    console.log(this.orderedActiveCustomersSuccess);
+  calculateReturn = ():number => {
     if (this.ensureNoDups()) return 0;
     if (this.orderedActiveCustomersSuccess[0].customerCount == 0) return 0;
     return this.orderedActiveCustomersSuccess[0].id;
