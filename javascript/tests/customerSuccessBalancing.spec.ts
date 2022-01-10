@@ -17,12 +17,12 @@ test('Scenario 1', () => {
     { id: 5, score: 60 },
     { id: 6, score: 10 },
   ];
-  const csAway = [2, 4];
+  const csAway:number[] = [2, 4];
 
   expect(new CustomerSuccessBalancing(css, customers, csAway).execute()).toEqual(1);
 });
 
-function buildSizeEntities(size, score) {
+function buildSizeEntities(size:number, score:number) {
   const result = [];
   for (let i = 0; i < size; i += 1) {
     //@ts-ignore
@@ -31,14 +31,14 @@ function buildSizeEntities(size, score) {
   return result;
 }
 
-function mapEntities(arr) {
+function mapEntities(arr:number[]):obj[] {
   return arr.map((item, index) => ({
     id: index + 1,
     score: item,
   }));
 }
 
-function arraySeq(count, startAt){
+function arraySeq(count:number, startAt:number){
   return Array.apply(0, Array(count)).map((it, index) => index + startAt);
 }
 
@@ -47,7 +47,7 @@ test('Scenario 2', () => {
   const customers = mapEntities([10, 10, 10, 20, 20, 30, 30, 30, 20, 60]);
   //                             11  11  11  21  21  31  31  31  21  31
   // O css 31 tem 4 customers e ganha sozinho, embora o 11 e o 21 empatem em segundo, não vejo pq o teste esperar um empate
-  const csAway = [];
+  const csAway:number[] = [];
 
   expect(new CustomerSuccessBalancing(css, customers, csAway).execute()).toEqual(0);
 });
@@ -58,7 +58,7 @@ test('Scenario 3', () => {
 
   const css = mapEntities(arraySeq(999, 1));
   const customers = buildSizeEntities(10000, 998);
-  const csAway = [999];
+  const csAway:number[] = [999];
 
   // MARK: the 999 is deleted in the upper line, getting right value from the ruby version
   expect(new CustomerSuccessBalancing(css, customers, csAway).execute()).toEqual(998);
@@ -71,7 +71,7 @@ test('Scenario 3', () => {
 test('Scenario 4', () => {
   const css = mapEntities([1, 2, 3, 4, 5, 6]);
   const customers = mapEntities([10, 10, 10, 20, 20, 30, 30, 30, 20, 60]);
-  const csAway = [];
+  const csAway:number[] = [];
 
   expect(new CustomerSuccessBalancing(css, customers, csAway).execute()).toEqual(0);
 });
@@ -79,7 +79,7 @@ test('Scenario 4', () => {
 test('Scenario 5', () => {
   const css = mapEntities([100, 2, 3, 3, 4, 5]);
   const customers = mapEntities([10, 10, 10, 20, 20, 30, 30, 30, 20, 60]);
-  const csAway = [];
+  const csAway:number[] = [];
 
   expect(new CustomerSuccessBalancing(css, customers, csAway).execute()).toEqual(1);
 });
@@ -87,7 +87,7 @@ test('Scenario 5', () => {
 test('Scenario 6', () => {
   const css = mapEntities([100, 99, 88, 3, 4, 5]);
   const customers = mapEntities([10, 10, 10, 20, 20, 30, 30, 30, 20, 60]);
-  const csAway = [1, 3, 2];
+  const csAway:number[] = [1, 3, 2];
 
   expect(new CustomerSuccessBalancing(css, customers, csAway).execute()).toEqual(0);
 });
@@ -95,7 +95,7 @@ test('Scenario 6', () => {
 test('Scenario 7', () => {
   const css = mapEntities([100, 99, 88, 3, 4, 5]);
   const customers = mapEntities([10, 10, 10, 20, 20, 30, 30, 30, 20, 60]);
-  const csAway = [4, 5, 6];
+  const csAway:number[] = [4, 5, 6];
 
   expect(new CustomerSuccessBalancing(css, customers, csAway).execute()).toEqual(3);
 });

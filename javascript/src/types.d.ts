@@ -3,8 +3,5 @@ interface obj {
   id: number,
 }
 
-interface customerSuccess extends obj {
-  customerCount?: number,
-}
-
+type customerSuccess = obj
 type customer = obj

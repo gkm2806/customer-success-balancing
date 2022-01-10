@@ -46,7 +46,7 @@ export class CustomerSuccessBalancing {
     }
   };
 
-  matchCustomerSuccess = (customer):void => {
+  matchCustomerSuccess = (customer:obj):void => {
     let index = -1;
     for(const acs of this.activeCustomersSuccess) {
       index++;
@@ -56,7 +56,7 @@ export class CustomerSuccessBalancing {
     }
   };
 
-  addMatch = (index) => {
+  addMatch = (index:number) => {
     this.customerSuccessMatchArray[index] ? this.customerSuccessMatchArray[index]++ : this.customerSuccessMatchArray[index] = 1;
   };
 
