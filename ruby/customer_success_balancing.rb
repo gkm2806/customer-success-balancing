@@ -9,10 +9,15 @@ class CustomerSuccessBalancing
 
   def execute
     @activeCustomers = @customers
+    @customerSuccessMatchArray = []
+    @maxIndices = []
+
     removeAwayCustomerSuccess
     sortCustomerSucccessByScore
+    createIndexedArray
     matchCustomersToCustomerSuccess
-    orderActiveCustomersSuccess
+    getMaxScore
+
     calculateReturn
   end
 
@@ -31,7 +36,11 @@ class CustomerSuccessBalancing
   end
 
   def sortCustomerSucccessByScore
-    @activeCustomersSuccess.sort { |a, b| a[:score] <=> b[:score] } 
+    @activeCustomersSuccess = @activeCustomersSuccess.sort { |a, b| a[:score] <=> b[:score] }
+  end
+
+  def createIndexedArray
+    @customerSuccessMatchArray = Array.new(@activeCustomersSuccess.length, 0)
   end
 
   def addCustomerCountToCustomerSuccess
@@ -45,41 +54,64 @@ class CustomerSuccessBalancing
   end
 
   def matchCustomerSuccess(customer)
+    index = -1
     @activeCustomersSuccess.each do | acs |
+      index+=1
       next if (acs[:score] < customer[:score])
-      acs[:customerCount] += 1
+      addMatch(index)
       break
     end
   end
 
-  def orderActiveCustomersSuccess
-    @orderedActiveCustomersSuccess = @activeCustomersSuccess.sort { |a, b| b[:customerCount] <=> a[:customerCount] } 
+  def addMatch(index)
+    !@customerSuccessMatchArray[index].nil? ? @customerSuccessMatchArray[index] += 1 : @customerSuccessMatchArray[index] = 1
+  end
+
+  def getMaxScore
+    max = -999999999999
+    maxIds = []
+    @customerSuccessMatchArray.each_with_index do | _, i |
+      if (@customerSuccessMatchArray[i] === max)
+        maxIds.push(i)
+      elsif (@customerSuccessMatchArray[i] > max) 
+        maxIds = [i]
+        max = @customerSuccessMatchArray[i]
+      end
+    end
+    @maxIndices = maxIds
   end
 
   def ensureNoDups
-    return true if(!@orderedActiveCustomersSuccess[1].nil? && @orderedActiveCustomersSuccess[0][:customerCount] === @orderedActiveCustomersSuccess[1][:customerCount])
+    return true if(@maxIndices.length > 1)
     false
   end
 
   def calculateReturn
+    bestCSIndex = @maxIndices[0]
     return 0 if (ensureNoDups())
-    return 0 if (@orderedActiveCustomersSuccess[0][:customerCount] == 0)
-    return @orderedActiveCustomersSuccess[0][:id]
-  end
-
-  def treatNoBiggerCs
-    lastAcs = @activeCustomersSuccess[@activeCustomersSuccess.length-1]
-    if(customer.score > lastAcs.score)
-      lastAcs.customerCount += 1
-      return true
-    end
+    return 0 if(bestCSIndex.nil?)
+    return 0 if (@customerSuccessMatchArray[bestCSIndex] == 0)
+    @activeCustomersSuccess[bestCSIndex][:id]
   end
 end
 
 class CustomerSuccessBalancingTests < Minitest::Test
   def test_scenario_one
-    css = [{ id: 1, score: 60 }, { id: 2, score: 20 }, { id: 3, score: 95 }, { id: 4, score: 75 }]
-    customers = [{ id: 1, score: 90 }, { id: 2, score: 20 }, { id: 3, score: 70 }, { id: 4, score: 40 }, { id: 5, score: 60 }, { id: 6, score: 10}]
+    css = [
+      { id: 1, score: 60 },
+      { id: 2, score: 20 },
+      { id: 3, score: 95 },
+      { id: 4, score: 75 }
+    ]
+
+    customers = [
+      { id: 1, score: 90 },
+      { id: 2, score: 20 },
+      { id: 3, score: 70 },
+      { id: 4, score: 40 },
+      { id: 5, score: 60 },
+      { id: 6, score: 10 }
+    ]
 
     balancer = CustomerSuccessBalancing.new(css, customers, [2, 4])
     assert_equal 1, balancer.execute

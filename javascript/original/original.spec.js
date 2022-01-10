@@ -1,9 +1,8 @@
 /* eslint-disable */
 const sortObjBy = (array, param, asc = true) => {
-  return asc 
-    ? array.sort((a,b) => (a[param]===null)-(b[param]===null) || +(a[param]>b[param])||-(a[param]<b[param]))
-    : array.sort((a,b) => (b[param]===null)-(a[param]===null) || +(b[param]>a[param])||-(b[param]<a[param]));
+  return asc ? array.sort((a,b) => a[param] - b[param]) : array.sort((a,b) => b[param] - a[param]);
 };
+
 
 function customerSuccessBalancing(
   customerSuccess,
@@ -11,14 +10,14 @@ function customerSuccessBalancing(
   customerSuccessAway
 ) {
   let activeCustomers = customers;
-  let activeCustomersSuccess, orderedActiveCustomersSuccess;
+  let activeCustomersSuccess, customerSuccessMatchArray, maxIndices = [];
 
   const execute = () => {
     removeAwayCustomerSuccess();
     sortCustomerSucccessByScore();
-    addCustomerCountToCustomerSuccess();
+    createIndexedArray();
     matchCustomersToCustomerSuccess();
-    orderActiveCustomersSuccess();
+    getMaxScore();
 
     return calculateReturn();
   };
@@ -31,38 +30,59 @@ function customerSuccessBalancing(
     return activeCustomersSuccess = sortObjBy(activeCustomersSuccess, 'score');
   };
 
-  const addCustomerCountToCustomerSuccess = () => {
+  createIndexedArray = () => {
+    return customerSuccessMatchArray = new Array(activeCustomersSuccess.length);
+  };
+
+  addCustomerCountToCustomerSuccess = () => {
     return activeCustomersSuccess = activeCustomersSuccess.map((cs) => ({ ...cs, customerCount: 0}));
   };
   
-  const matchCustomersToCustomerSuccess = () => {
+  matchCustomersToCustomerSuccess = () => {
     for(const customer of activeCustomers) {
-      // if (treatNoBiggerCs(customer)) continue;
       matchCustomerSuccess(customer);
     }
   };
 
-  const matchCustomerSuccess = (customer) => {
+  matchCustomerSuccess = (customer) => {
+    let index = -1;
     for(const acs of activeCustomersSuccess) {
+      index++;
       if (acs.score < customer.score) continue;
-      acs.customerCount += 1;
+      addMatch(index);
       break;
     }
   };
 
-  const orderActiveCustomersSuccess = () => {
-    orderedActiveCustomersSuccess = sortObjBy(activeCustomersSuccess, 'customerCount', false);
+  addMatch = (index) => {
+    customerSuccessMatchArray[index] ? customerSuccessMatchArray[index]++ : customerSuccessMatchArray[index] = 1;
   };
 
-  const ensureNoDups = () => {
-    if(orderedActiveCustomersSuccess[0].customerCount === orderedActiveCustomersSuccess[1].customerCount) return true;
+  getMaxScore = () => {
+    let max = -Infinity;
+    let maxIds = [];
+    for (let i = 0; i < customerSuccessMatchArray.length; i++) {
+      if (customerSuccessMatchArray[i] === max) {
+        maxIds.push(i);
+      } else if (customerSuccessMatchArray[i] > max) {
+        maxIds = [i];
+        max = customerSuccessMatchArray[i];
+      }
+    }
+    return maxIndices = maxIds;
+  };
+
+  ensureNoDups = () => {
+    if(maxIndices.length > 1) return true;
     return false;
   };
 
-  const calculateReturn = () => {
+  calculateReturn = () => {
+    const bestCSIndex = maxIndices[0];
     if (ensureNoDups()) return 0;
-    if (orderedActiveCustomersSuccess[0].customerCount == 0) return 0;
-    return orderedActiveCustomersSuccess[0].id;
+    if(bestCSIndex  == null) return 0;
+    if (customerSuccessMatchArray[bestCSIndex] == 0) return 0;
+    return activeCustomersSuccess[bestCSIndex].id;
   };
 
   return execute();
@@ -123,7 +143,8 @@ test("Scenario 3", () => {
   const customers = buildSizeEntities(10000, 998);
   const csAway = [999];
 
-  expect(customerSuccessBalancing(css, customers, csAway)).toEqual(999);
+  // MARK: the 999 is deleted in the upper line, getting right value from the ruby version
+  expect(customerSuccessBalancing(css, customers, csAway)).toEqual(998);
 
   if (new Date().getTime() - testStartTime > testTimeoutInMs) {
     throw new Error(`Test took longer than ${testTimeoutInMs}ms!`);

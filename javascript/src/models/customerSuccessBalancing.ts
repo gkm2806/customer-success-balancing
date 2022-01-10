@@ -7,8 +7,8 @@ const sortObjBy = (array:any[], param:string, asc = true) => {
 export class CustomerSuccessBalancing {
   private activeCustomers: customer[];
   private activeCustomersSuccess:customerSuccess[];
-  private orderedActiveCustomersSuccess: customerSuccess[];
-
+  private customerSuccessMatchArray: number[];
+  private maxIndices: number[];
   constructor(
     private customerSuccess: customerSuccess[],
     private customers: customer[],
@@ -19,9 +19,9 @@ export class CustomerSuccessBalancing {
     this.activeCustomers = this.customers;
     this.removeAwayCustomerSuccess();
     this.sortCustomerSucccessByScore();
-    this.addCustomerCountToCustomerSuccess();
+    this.createIndexedArray();
     this.matchCustomersToCustomerSuccess();
-    this.orderActiveCustomersSuccess();
+    this.getMaxScore();
 
     return this.calculateReturn();
   }
@@ -30,19 +30,12 @@ export class CustomerSuccessBalancing {
     return this.activeCustomersSuccess = this.customerSuccess.filter((cs) => !this.customerSuccessAway.includes(cs.id));
   };
 
-  // MARK: remove customerSuccessAway and add new property
-  awesomeMethod = ():void => {
-    const data = this.customerSuccess.reduce((acc, currentCS) => {
-      if(!this.customerSuccessAway.includes(currentCS.id)){
-        acc.push({...currentCS, customerCount: 0 });
-      }
-      return acc;
-    }, [] as customerSuccess[]);
-    this.activeCustomersSuccess = data;
-  };
-
   sortCustomerSucccessByScore = ():customerSuccess[] => {
     return this.activeCustomersSuccess = sortObjBy(this.activeCustomersSuccess, 'score');
+  };
+
+  createIndexedArray = ():number[] => {
+    return this.customerSuccessMatchArray = new Array(this.activeCustomersSuccess.length);
   };
 
   addCustomerCountToCustomerSuccess = ():customerSuccess[] => {
@@ -51,40 +44,48 @@ export class CustomerSuccessBalancing {
   
   matchCustomersToCustomerSuccess = ():void => {
     for(const customer of this.activeCustomers) {
-      // if (this.treatNoBiggerCs(customer)) continue;
       this.matchCustomerSuccess(customer);
     }
   };
 
   matchCustomerSuccess = (customer):void => {
+    let index = -1;
     for(const acs of this.activeCustomersSuccess) {
+      index++;
       if (acs.score < customer.score) continue;
-      acs.customerCount! += 1;
+      this.addMatch(index);
       break;
     }
   };
 
-  orderActiveCustomersSuccess = ():void => {
-    this.orderedActiveCustomersSuccess = sortObjBy(this.activeCustomersSuccess, 'customerCount', false);
+  addMatch = (index) => {
+    this.customerSuccessMatchArray[index] ? this.customerSuccessMatchArray[index]++ : this.customerSuccessMatchArray[index] = 1;
+  };
+
+  getMaxScore = ():number[] => {
+    let max = -Infinity;
+    let maxIndices:number[] = [];
+    for (let i = 0; i < this.customerSuccessMatchArray.length; i++) {
+      if (this.customerSuccessMatchArray[i] === max) {
+        maxIndices.push(i);
+      } else if (this.customerSuccessMatchArray[i] > max) {
+        maxIndices = [i];
+        max = this.customerSuccessMatchArray[i];
+      }
+    }
+    return this.maxIndices = maxIndices;
   };
 
   ensureNoDups = ():boolean => {
-    if(this.orderedActiveCustomersSuccess[0].customerCount === this.orderedActiveCustomersSuccess[1].customerCount) return true;
+    if(this.maxIndices.length > 1) return true;
     return false;
   };
 
   calculateReturn = ():number => {
+    const bestCSIndex = this.maxIndices[0];
     if (this.ensureNoDups()) return 0;
-    if (this.orderedActiveCustomersSuccess[0].customerCount == 0) return 0;
-    return this.orderedActiveCustomersSuccess[0].id;
-  };
-
-  //Not used
-  treatNoBiggerCs = (customer) => {
-    const lastAcs = this.activeCustomersSuccess[this.activeCustomersSuccess.length-1];
-    if(customer.score > lastAcs.score) {
-      lastAcs.customerCount! += 1;
-      return true;
-    }
+    if(bestCSIndex  == null) return 0;
+    if (this.customerSuccessMatchArray[bestCSIndex] == 0) return 0;
+    return this.activeCustomersSuccess[bestCSIndex].id;
   };
 }
