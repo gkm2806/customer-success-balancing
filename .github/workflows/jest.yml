@@ -7,9 +7,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Install tsc module globally
-        working-directory: ./javascript
-        run: npm install -g tsc
       - name: Install modules
         working-directory: ./javascript
         run: npm install
