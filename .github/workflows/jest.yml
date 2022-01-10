@@ -1,0 +1,15 @@
+name: CI JEST
+on:
+  pull_request:
+    types: [opened, synchronize]
+jobs:
+  jest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install modules
+        working-directory: ./javascript
+        run: npm install
+      - name: Run tests
+        working-directory: ./javascript
+        run: npm run test
