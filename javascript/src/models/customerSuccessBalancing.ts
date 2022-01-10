@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-
 const sortObjBy = (array:any[], param:string, asc = true) => {
   return asc ? array.sort((a,b) => a[param] - b[param]) : array.sort((a,b) => b[param] - a[param]);
 };
