@@ -2,6 +2,9 @@ name: CI JEST
 on:
   pull_request:
     types: [opened, synchronize]
+  push:
+    branches:    
+      - master
 jobs:
   jest:
     runs-on: ubuntu-latest

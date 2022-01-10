@@ -2,6 +2,9 @@ name: CI RUBY
 on:
   pull_request:
     types: [opened, synchronize]
+  push:
+    branches:    
+      - master
 jobs:
   ruby_test:
     runs-on: ubuntu-latest
