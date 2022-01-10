@@ -4,7 +4,7 @@
   "main": "customer-success-balancing.js",
   "private": true,
   "scripts": {
-    "test": "tsc && jest",
+    "test": "tsc && jest dist/tests/**.spec.js",
     "original": "jest original/original.spec.js"
   },
   "dependencies": {
