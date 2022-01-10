@@ -36,7 +36,7 @@ class CustomerSuccessBalancing
   end
 
   def sortCustomerSucccessByScore
-    @activeCustomersSuccess.sort { |a, b| a[:score] <=> b[:score] } 
+    @activeCustomersSuccess = @activeCustomersSuccess.sort { |a, b| a[:score] <=> b[:score] }
   end
 
   def createIndexedArray
